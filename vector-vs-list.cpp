@@ -11,8 +11,8 @@ using namespace std;
 class Node {
     private:
     int num;
-    string array[1024];
-    int dummy[2096];
+    string array[8];
+    int dummy[16];
     public:
     bool operator<(const Node& node) const {
         if(this->num < node.num) return true;
