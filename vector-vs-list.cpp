@@ -33,30 +33,40 @@ void randomIndexes(int N, vector<int>& indexes) {
     }
 }
 
-double testingVector(vector<int>& nums, vector<int>& indexes) {
-    vector<int> testVector;
-    auto start = chrono::high_resolution_clock::now();
+template<class Container>
+void insertIntoContainer(Container& container, vector<int>& nums) {
     for(auto num : nums) {
-        vector<int>::iterator insertAt = testVector.begin();
-        while(insertAt != testVector.end()) {
+        auto insertAt = container.begin();
+        while(insertAt != container.end()) {
             if(*insertAt > num)
                 break;
-            ++insertAt;
+            insertAt++;
         }
-        testVector.insert(insertAt, num);
+        container.insert(insertAt, num);
     }
-    
+}
+
+template<class Container>
+void deleteFromContainer(Container& container, vector<int>& indexes) {
     for(auto index : indexes) {
-        vector<int>::iterator deleteAt = testVector.begin();
+        auto deleteAt = container.begin();
         while(index > 0) {
             deleteAt++;
             index--;
         }
-        testVector.erase(deleteAt);
+        container.erase(deleteAt);
     }
+}
+
+template<class Container>
+double testingContainer(Container& container, vector<int>& nums, vector<int>& indexes) {
+    auto start = chrono::high_resolution_clock::now();
+    
+    insertIntoContainer(container, nums);
+    deleteFromContainer(container, indexes);
+    
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = end - start;
-    std::cout << "Vector Elapsed Time = " << duration.count() << std::endl;
     return duration.count();
 }
 
@@ -81,40 +91,14 @@ double testingSet(vector<int>& nums, vector<int>& indexes) {
     return duration.count();
 }
 
-double testingList(vector<int>& nums, vector<int>& indexes) {
-    list<int> testList;
-    auto start = chrono::high_resolution_clock::now();
-    for(auto num : nums) {
-        list<int>::iterator insertAt = testList.begin();
-        while(insertAt != testList.end()) {
-            if(*insertAt > num)
-                break;
-            ++insertAt;
-        }
-        testList.insert(insertAt, num);
-    }
-    
-    for(auto index : indexes) {
-        list<int>::iterator deleteAt = testList.begin();
-        while(index > 0) {
-            deleteAt++;
-            index--;
-        }
-        testList.erase(deleteAt);
-    }
-    auto end = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration = end - start;
-    std::cout << "List Elapsed Time = " << duration.count() << std::endl;
-    return duration.count();
-}
-
 int main() {
     vector<int> nums;
     vector<int> indexes;
     randomNumbers(100000, nums);
     randomIndexes(100000, indexes);
     
-    testingVector(nums, indexes);
-    testingList(nums, indexes);
+    vector<int> testVector; list<int> testList;
+    std::cout << "Vector duration = " << testingContainer(testVector, nums, indexes) << " secs" << std::endl;
+    std::cout << "List duration = " << testingContainer(testList, nums, indexes) << " secs" << std::endl;
     testingSet(nums, indexes);
 }
