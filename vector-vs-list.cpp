@@ -11,11 +11,19 @@ using namespace std;
 class Node {
     private:
     int num;
+    string array[1024];
+    int dummy[2096];
     public:
-    
+    bool operator<(const Node& node) const {
+        if(this->num < node.num) return true;
+        return false;
+    }
+    Node(int val) {
+        num = val;
+    }
 };
 
-void randomNumbers(int N, vector<int>& nums, int seed) {
+void randomNumbers(int N, vector<int>& nums, vector<Node>& nodes, int seed) {
     unordered_set<int> numsset;
     default_random_engine generator(seed);
     uniform_int_distribution<int> distribution(1, numeric_limits<int>::max());
@@ -25,6 +33,8 @@ void randomNumbers(int N, vector<int>& nums, int seed) {
         if(numsset.find(num) == numsset.end()) {
             numsset.insert(num);
             nums.push_back(num);
+            Node node(num);
+            nodes.push_back(node);
         } else i--;
     }
 }
@@ -40,12 +50,12 @@ void randomIndexes(int N, vector<int>& indexes, int seed) {
     }
 }
 
-template<class Container>
-void insertIntoContainer(Container& container, vector<int>& nums) {
+template<class Container, typename type>
+void insertIntoContainer(Container& container, vector<type>& nums) {
     for(auto num : nums) {
         auto insertAt = container.begin();
         while(insertAt != container.end()) {
-            if(*insertAt > num)
+            if(num < *insertAt)
                 break;
             insertAt++;
         }
@@ -53,8 +63,9 @@ void insertIntoContainer(Container& container, vector<int>& nums) {
     }
 }
 
-template<>
-void insertIntoContainer<set<int>>(set<int>& container, vector<int>& nums) {
+
+template<typename type>
+void insertIntoContainer(set<type>& container, vector<type>& nums) {
     for(auto num : nums) {
         container.insert(num);
     }
@@ -72,8 +83,8 @@ void deleteFromContainer(Container& container, vector<int>& indexes) {
     }
 }
 
-template<class Container>
-double testingContainer(Container& container, vector<int>& nums, vector<int>& indexes) {
+template<class Container, typename type>
+double testingContainer(Container& container, vector<type>& nums, vector<int>& indexes) {
     auto start = chrono::high_resolution_clock::now();
     
     insertIntoContainer(container, nums);
@@ -87,21 +98,32 @@ double testingContainer(Container& container, vector<int>& nums, vector<int>& in
 int main() {
     int seeds[] {1233213, 5432432, 43255342};
     
-    for(auto N = 10; N <= 10000; N*=10) {
-        double vectorSecs = 0, listSeconds = 0, setSeconds = 0;
+    for(auto N = 10; N <= 100000000; N*=10) {
+        double intVectorSecs = 0, intListSeconds = 0, intSetSeconds = 0;
+        double nodeVectorSecs = 0, nodeListSeconds = 0, nodeSetSeconds = 0;
         for(auto seed : seeds) {
             vector<int> nums;
+            vector<Node> nodes;
             vector<int> indexes;
-            randomNumbers(N, nums, seed);
+            randomNumbers(N, nums, nodes, seed);
             randomIndexes(N, indexes, seed);
             
-            vector<int> testVector; list<int> testList; set<int> testSet;
-            vectorSecs+= testingContainer(testVector, nums, indexes);
-            listSeconds+= testingContainer(testList, nums, indexes);
-            setSeconds+= testingContainer(testSet, nums, indexes);
+            vector<int> intTestVector; list<int> intTestList; set<int> intTestSet;
+            vector<Node> nodeTestVector; list<Node> nodeTestList; set<Node> nodeTestSet;
+            
+            intVectorSecs+= testingContainer(intTestVector, nums, indexes);
+            intListSeconds+= testingContainer(intTestList, nums, indexes);
+            intSetSeconds+= testingContainer(intTestSet, nums, indexes);
+            
+            nodeVectorSecs+= testingContainer(nodeTestVector, nodes, indexes);
+            nodeListSeconds+= testingContainer(nodeTestList, nodes, indexes);
+            nodeSetSeconds+= testingContainer(nodeTestSet, nodes, indexes);
         }
-        cout << "Vector duration = " << vectorSecs / 3 << "secs ";
-        cout << "List duration = " << listSeconds / 3 << "secs ";
-        cout << "Set duration = " << setSeconds / 3 << "secs" << endl;
+        cout << "int Vector duration = " << intVectorSecs / 3 << "secs ";
+        cout << "int List duration = " << intListSeconds / 3 << "secs ";
+        cout << "int Set duration = " << intSetSeconds / 3 << "secs" << endl;
+        cout << "Node Vector duration = " << nodeVectorSecs / 3 << "secs ";
+        cout << "Node List duration = " << nodeListSeconds / 3 << "secs ";
+        cout << "Node Set duration = " << nodeSetSeconds / 3 << "secs" << endl;
     }
 }
