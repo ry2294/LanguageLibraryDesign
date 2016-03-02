@@ -2,6 +2,7 @@
 #include <iostream>
 #include <limits>
 #include <unordered_set>
+#include <list>
 
 using namespace std;
 
@@ -35,16 +36,44 @@ void testingVector(vector<int>& nums, vector<int>& indexes) {
     for(auto num : nums) {
         int i = 0;
         vector<int>::iterator insertAt = testVector.begin();
-        for(; insertAt != testVector.end(); ++insertAt) {
-            if(*insertAt > num) {
+        while(insertAt != testVector.end()) {
+            if(*insertAt > num)
                 break;
-            }
+            ++insertAt;
         }
         testVector.insert(insertAt, num);
     }
     
     for(auto index : indexes) {
-        testVector.erase(testVector.begin() + index);
+        vector<int>::iterator deleteAt = testVector.begin();
+        while(index > 0) {
+            deleteAt++;
+            index--;
+        }
+        testVector.erase(deleteAt);
+    }
+}
+
+void testingList(vector<int>& nums, vector<int>& indexes) {
+    list<int> testList;
+    for(auto num : nums) {
+        int i = 0;
+        list<int>::iterator insertAt = testList.begin();
+        while(insertAt != testList.end()) {
+            if(*insertAt > num)
+                break;
+            ++insertAt;
+        }
+        testList.insert(insertAt, num);
+    }
+    
+    for(auto index : indexes) {
+        list<int>::iterator deleteAt = testList.begin();
+        while(index > 0) {
+            deleteAt++;
+            index--;
+        }
+        testList.erase(deleteAt);
     }
 }
 
@@ -54,4 +83,5 @@ int main() {
     randomNumbers(10, nums);
     randomIndexes(10, indexes);
     testingVector(nums, indexes);
+    testingList(nums, indexes);
 }
