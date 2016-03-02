@@ -117,15 +117,15 @@ int main() {
             intListSeconds+= testingContainer(intTestList, nums, indexes);
             intSetSeconds+= testingContainer(intTestSet, nums, indexes);
             
-            nodeVectorSecs+= testingContainer(nodeTestVector, nodes, indexes);
-            nodeListSeconds+= testingContainer(nodeTestList, nodes, indexes);
-            nodeSetSeconds+= testingContainer(nodeTestSet, nodes, indexes);
+            //nodeVectorSecs+= testingContainer(nodeTestVector, nodes, indexes);
+            //nodeListSeconds+= testingContainer(nodeTestList, nodes, indexes);
+            //nodeSetSeconds+= testingContainer(nodeTestSet, nodes, indexes);
         }
         cout << "int Vector duration = " << intVectorSecs / 3 << "secs ";
         cout << "int List duration = " << intListSeconds / 3 << "secs ";
         cout << "int Set duration = " << intSetSeconds / 3 << "secs" << endl;
-        cout << "Node Vector duration = " << nodeVectorSecs / 3 << "secs ";
-        cout << "Node List duration = " << nodeListSeconds / 3 << "secs ";
-        cout << "Node Set duration = " << nodeSetSeconds / 3 << "secs" << endl;
+        //cout << "Node Vector duration = " << nodeVectorSecs / 3 << "secs ";
+        //cout << "Node List duration = " << nodeListSeconds / 3 << "secs ";
+        //cout << "Node Set duration = " << nodeSetSeconds / 3 << "secs" << endl;
     }
 }
