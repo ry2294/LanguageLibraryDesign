@@ -3,6 +3,8 @@
 #include <limits>
 #include <unordered_set>
 #include <list>
+#include <set>
+#include <chrono>
 
 using namespace std;
 
@@ -31,10 +33,10 @@ void randomIndexes(int N, vector<int>& indexes) {
     }
 }
 
-void testingVector(vector<int>& nums, vector<int>& indexes) {
+double testingVector(vector<int>& nums, vector<int>& indexes) {
     vector<int> testVector;
+    auto start = chrono::high_resolution_clock::now();
     for(auto num : nums) {
-        int i = 0;
         vector<int>::iterator insertAt = testVector.begin();
         while(insertAt != testVector.end()) {
             if(*insertAt > num)
@@ -52,12 +54,37 @@ void testingVector(vector<int>& nums, vector<int>& indexes) {
         }
         testVector.erase(deleteAt);
     }
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = end - start;
+    std::cout << "Vector Elapsed Time = " << duration.count() << std::endl;
+    return duration.count();
 }
 
-void testingList(vector<int>& nums, vector<int>& indexes) {
-    list<int> testList;
+double testingSet(vector<int>& nums, vector<int>& indexes) {
+    set<int> testSet;
+    auto start = chrono::high_resolution_clock::now();
     for(auto num : nums) {
-        int i = 0;
+        testSet.insert(num);
+    }
+    
+    for(auto index : indexes) {
+        set<int>::iterator deleteAt = testSet.begin();
+        while(index > 0) {
+            deleteAt++;
+            index--;
+        }
+        testSet.erase(deleteAt);
+    }
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = end - start;
+    std::cout << "Set Elapsed Time = " << duration.count() << std::endl;
+    return duration.count();
+}
+
+double testingList(vector<int>& nums, vector<int>& indexes) {
+    list<int> testList;
+    auto start = chrono::high_resolution_clock::now();
+    for(auto num : nums) {
         list<int>::iterator insertAt = testList.begin();
         while(insertAt != testList.end()) {
             if(*insertAt > num)
@@ -75,13 +102,19 @@ void testingList(vector<int>& nums, vector<int>& indexes) {
         }
         testList.erase(deleteAt);
     }
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = end - start;
+    std::cout << "List Elapsed Time = " << duration.count() << std::endl;
+    return duration.count();
 }
 
 int main() {
     vector<int> nums;
     vector<int> indexes;
-    randomNumbers(10, nums);
-    randomIndexes(10, indexes);
+    randomNumbers(100000, nums);
+    randomIndexes(100000, indexes);
+    
     testingVector(nums, indexes);
     testingList(nums, indexes);
+    testingSet(nums, indexes);
 }
