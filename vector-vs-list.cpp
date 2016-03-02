@@ -43,9 +43,8 @@ void testingVector(vector<int>& nums, vector<int>& indexes) {
         testVector.insert(insertAt, num);
     }
     
-    std::cout << "Printing after sorting" << std::endl;
-    for(auto num : testVector) {
-        std::cout << num << std::endl;
+    for(auto index : indexes) {
+        testVector.erase(testVector.begin() + index);
     }
 }
 
