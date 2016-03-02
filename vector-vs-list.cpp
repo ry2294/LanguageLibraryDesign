@@ -8,9 +8,16 @@
 
 using namespace std;
 
-void randomNumbers(int N, vector<int>& nums) {
+class Node {
+    private:
+    int num;
+    public:
+    
+};
+
+void randomNumbers(int N, vector<int>& nums, int seed) {
     unordered_set<int> numsset;
-    default_random_engine generator;
+    default_random_engine generator(seed);
     uniform_int_distribution<int> distribution(1, numeric_limits<int>::max());
     
     for(int i = 0; i < N; i++) {
@@ -22,9 +29,9 @@ void randomNumbers(int N, vector<int>& nums) {
     }
 }
 
-void randomIndexes(int N, vector<int>& indexes) {
+void randomIndexes(int N, vector<int>& indexes, int seed) {
     unordered_set<int> indexset;
-    default_random_engine generator;
+    default_random_engine generator(seed);
     
     for(int i = N - 1; i >= 0; i--) {
         uniform_int_distribution<int> distribution(0, i);
@@ -43,6 +50,13 @@ void insertIntoContainer(Container& container, vector<int>& nums) {
             insertAt++;
         }
         container.insert(insertAt, num);
+    }
+}
+
+template<>
+void insertIntoContainer<set<int>>(set<int>& container, vector<int>& nums) {
+    for(auto num : nums) {
+        container.insert(num);
     }
 }
 
@@ -70,35 +84,24 @@ double testingContainer(Container& container, vector<int>& nums, vector<int>& in
     return duration.count();
 }
 
-double testingSet(vector<int>& nums, vector<int>& indexes) {
-    set<int> testSet;
-    auto start = chrono::high_resolution_clock::now();
-    for(auto num : nums) {
-        testSet.insert(num);
-    }
-    
-    for(auto index : indexes) {
-        set<int>::iterator deleteAt = testSet.begin();
-        while(index > 0) {
-            deleteAt++;
-            index--;
-        }
-        testSet.erase(deleteAt);
-    }
-    auto end = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration = end - start;
-    std::cout << "Set Elapsed Time = " << duration.count() << std::endl;
-    return duration.count();
-}
-
 int main() {
-    vector<int> nums;
-    vector<int> indexes;
-    randomNumbers(100000, nums);
-    randomIndexes(100000, indexes);
+    int seeds[] {1233213, 5432432, 43255342};
     
-    vector<int> testVector; list<int> testList;
-    std::cout << "Vector duration = " << testingContainer(testVector, nums, indexes) << " secs" << std::endl;
-    std::cout << "List duration = " << testingContainer(testList, nums, indexes) << " secs" << std::endl;
-    testingSet(nums, indexes);
+    for(auto N = 10; N <= 10000; N*=10) {
+        double vectorSecs = 0, listSeconds = 0, setSeconds = 0;
+        for(auto seed : seeds) {
+            vector<int> nums;
+            vector<int> indexes;
+            randomNumbers(N, nums, seed);
+            randomIndexes(N, indexes, seed);
+            
+            vector<int> testVector; list<int> testList; set<int> testSet;
+            vectorSecs+= testingContainer(testVector, nums, indexes);
+            listSeconds+= testingContainer(testList, nums, indexes);
+            setSeconds+= testingContainer(testSet, nums, indexes);
+        }
+        cout << "Vector duration = " << vectorSecs / 3 << "secs ";
+        cout << "List duration = " << listSeconds / 3 << "secs ";
+        cout << "Set duration = " << setSeconds / 3 << "secs" << endl;
+    }
 }
