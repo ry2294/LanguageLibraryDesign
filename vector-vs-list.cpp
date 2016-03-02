@@ -96,9 +96,11 @@ double testingContainer(Container& container, vector<type>& nums, vector<int>& i
 }
 
 int main() {
+    int Ns[] {1000, 5000, 10000, 50000, 100000, 200000, 300000, 
+    400000, 500000, 600000, 700000, 800000, 900000, 1000000};
     int seeds[] {1233213, 5432432, 43255342};
     
-    for(auto N = 10; N <= 100000000; N*=10) {
+    for(auto N : Ns) {
         double intVectorSecs = 0, intListSeconds = 0, intSetSeconds = 0;
         double nodeVectorSecs = 0, nodeListSeconds = 0, nodeSetSeconds = 0;
         for(auto seed : seeds) {
