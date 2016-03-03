@@ -11,8 +11,10 @@ using namespace std;
 class Node {
     private:
     int num;
-    string array[8];
-    int dummy[16];
+    string dummyString;
+    int dummyint;
+    bool dummyBool;
+    double dummyDouble;
     public:
     bool operator<(const Node& node) const {
         if(this->num < node.num) return true;
@@ -97,7 +99,7 @@ double testingContainer(Container& container, vector<type>& nums, vector<int>& i
 
 int main() {
     int Ns[] {1000, 5000, 10000, 50000, 100000, 200000, 300000, 
-    400000, 500000, 600000, 700000, 800000, 900000, 1000000};
+    400000, 500000, 600000};
     int seeds[] {1233213, 5432432, 43255342};
     
     for(auto N : Ns) {
@@ -117,15 +119,15 @@ int main() {
             intListSeconds+= testingContainer(intTestList, nums, indexes);
             intSetSeconds+= testingContainer(intTestSet, nums, indexes);
             
-            //nodeVectorSecs+= testingContainer(nodeTestVector, nodes, indexes);
-            //nodeListSeconds+= testingContainer(nodeTestList, nodes, indexes);
-            //nodeSetSeconds+= testingContainer(nodeTestSet, nodes, indexes);
+            nodeVectorSecs+= testingContainer(nodeTestVector, nodes, indexes);
+            nodeListSeconds+= testingContainer(nodeTestList, nodes, indexes);
+            nodeSetSeconds+= testingContainer(nodeTestSet, nodes, indexes);
         }
         cout << "int Vector duration = " << intVectorSecs / 3 << "secs ";
         cout << "int List duration = " << intListSeconds / 3 << "secs ";
         cout << "int Set duration = " << intSetSeconds / 3 << "secs" << endl;
-        //cout << "Node Vector duration = " << nodeVectorSecs / 3 << "secs ";
-        //cout << "Node List duration = " << nodeListSeconds / 3 << "secs ";
-        //cout << "Node Set duration = " << nodeSetSeconds / 3 << "secs" << endl;
+        cout << "Node Vector duration = " << nodeVectorSecs / 3 << "secs ";
+        cout << "Node List duration = " << nodeListSeconds / 3 << "secs ";
+        cout << "Node Set duration = " << nodeSetSeconds / 3 << "secs" << endl;
     }
 }
